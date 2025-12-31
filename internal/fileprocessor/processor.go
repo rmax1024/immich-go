@@ -56,6 +56,11 @@ func (fp *FileProcessor) RecordAssetProcessed(ctx context.Context, file fshelper
 	fp.logger.RecordWithSize(ctx, code, file, size)
 }
 
+func (fp *FileProcessor) RecordAssetProcessed1(ctx context.Context, file fshelper.FSAndName, size int64, code fileevent.Code, reason string) {
+	fp.tracker.SetProcessed(file, code)
+	fp.logger.RecordWithSize(ctx, code, file, size, "reason", reason)
+}
+
 // RecordAssetDiscarded transitions an asset to DISCARDED state.
 // The state change is tracked and the event is logged with the reason.
 func (fp *FileProcessor) RecordAssetDiscarded(ctx context.Context, file fshelper.FSAndName, size int64, code fileevent.Code, reason string) {
