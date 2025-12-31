@@ -398,8 +398,11 @@ func (uc *UpCmd) handleAsset(ctx context.Context, a *assets.Asset) error {
 		err = uc.client.Immich.DeleteAssets(ctx, []string{a.ID}, true)
 		if err != nil {
 			// Record delete error
-			uc.app.FileProcessor().RecordAssetError(ctx, newAsset.File, int64(newAsset.FileSize), fileevent.ErrorServerError, err)
-			return "", err // Must signal the error to the caller
+			uc.app.FileProcessor().RecordAssetError(ctx, a.File, int64(a.FileSize), fileevent.ErrorServerError, err)
+			return err // Must signal the error to the caller
+		} else {
+			uc.app.FileProcessor().RecordAssetProcessed1(ctx, a.File, int64(a.FileSize), fileevent.DiscardedServerDuplicate, fmt.Sprintf("deleted asset %s", a.ID))
+			return nil
 		}
 
 	case BetterOnServer: // and manage albums
