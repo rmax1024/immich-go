@@ -457,7 +457,8 @@ func (uc *UpCmd) uploadAsset(ctx context.Context, a *assets.Asset) (string, erro
 				fmt.Sprintf("already present in input as %s", originalName))
 		} else {
 			// Record as processed - server duplicate
-			uc.app.FileProcessor().RecordAssetProcessed(ctx, a.File, int64(a.FileSize), fileevent.DiscardedServerDuplicate)
+			uc.app.FileProcessor().RecordAssetProcessed1(ctx, a.File, int64(a.FileSize), fileevent.DiscardedServerDuplicate,
+														fmt.Sprintf("already present on server as %s", a.ID))
 		}
 	} else {
 		// Record successful upload
